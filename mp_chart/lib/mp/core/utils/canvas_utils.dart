@@ -9,7 +9,18 @@ abstract class CanvasUtils {
   static void drawLines(
       ui.Canvas canvas, List<double> pts, int offset, int count, ui.Paint paint,
       {DashPathEffect effect}) {
+
+    var paint1 = Paint();
+    paint1.strokeWidth = 2.0;
+
+    paint1.color = paint.color;
+    paint1.maskFilter = MaskFilter.blur(BlurStyle.normal, 10 * 0.57735 + 1);
+
     if (effect == null) {
+      for (int i = offset; i < count; i += 4) {
+        canvas.drawLine(ui.Offset(pts[i], pts[i + 1]),
+            ui.Offset(pts[i + 2], pts[i + 3]), paint1);
+      }
       for (int i = offset; i < count; i += 4) {
         canvas.drawLine(ui.Offset(pts[i], pts[i + 1]),
             ui.Offset(pts[i + 2], pts[i + 3]), paint);
@@ -21,6 +32,7 @@ abstract class CanvasUtils {
         path.moveTo(pts[i], pts[i + 1]);
         path.lineTo(pts[i + 2], pts[i + 3]);
         path = effect.convert2DashPath(path);
+        canvas.drawPath(path, paint1);
         canvas.drawPath(path, paint);
       }
     }
